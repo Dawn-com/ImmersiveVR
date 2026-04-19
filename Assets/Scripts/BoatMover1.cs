@@ -68,22 +68,22 @@ public class BoatMover1 : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("CarryItem"))
+        if (other.GetComponent<CarryItem>() != null)
         {
             if (!carriedObjects.Contains(other.transform))
             {
                 carriedObjects.Add(other.transform);
-                other.transform.SetParent(transform); // attach to boat
+                other.transform.SetParent(transform);
             }
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("CarryItem"))
+        if (other.GetComponent<CarryItem>() != null)
         {
             carriedObjects.Remove(other.transform);
-            other.transform.SetParent(null); // detach if needed
+            other.transform.SetParent(null);
         }
     }
 }

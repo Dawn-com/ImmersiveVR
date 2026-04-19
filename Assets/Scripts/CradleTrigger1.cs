@@ -1,30 +1,61 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class CradleTrigger1 : MonoBehaviour
 {
-    public int requiredBalls = 4;
-    private int currentBalls = 0;
+    private HashSet<string> requiredItems = new HashSet<string>()
+    {
+        "WindGem",
+        "WaterDiamond",
+        "StarBethlehem"
+    };
+
+    private HashSet<string> collectedItems = new HashSet<string>();
+
     private bool isActivated = false;
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("cradleBall"))
-        {
-            currentBalls++;
+        Debug.Log("Triggered by: " + other.name);
 
-            if (!isActivated && currentBalls >= requiredBalls)
-            {
-                isActivated = true;
-                GameEvents1.current.AllCradlesActivated();
-            }
+        cradleItem item = other.GetComponent<cradleItem>();
+        if (item == null) return;
+
+        Debug.Log("Item detected: " + item.itemId);
+
+        if (requiredItems.Contains(item.itemId))
+        {
+            collectedItems.Add(item.itemId);
         }
+
+        CheckActivation();
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("cradleBall"))
+        cradleItem item = other.GetComponent<cradleItem>();
+        if (item == null) return;
+
+        Debug.Log("Exited: " + item.itemId);
+
+        collectedItems.Remove(item.itemId);
+
+        isActivated = false;
+    }
+
+    private void CheckActivation()
+    {
+        if (isActivated) return;
+
+        foreach (string item in requiredItems)
         {
-            currentBalls--;
+            if (!collectedItems.Contains(item))
+                return;
         }
+
+        isActivated = true;
+        Debug.Log("ALL ITEMS PLACED ? TRIGGERING EVENT");
+
+        GameEvents1.current.AllCradlesActivated();
     }
 }

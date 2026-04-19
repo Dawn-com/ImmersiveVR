@@ -1,10 +1,11 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class CradleTrigger3 : MonoBehaviour
 {
     public CarColor cradleColor;
 
-    private int currentBalls = 0;
+    private HashSet<Transform> ballsInside = new HashSet<Transform>();
     private bool isActivated = false;
 
     private int RequiredBalls
@@ -16,7 +17,7 @@ public class CradleTrigger3 : MonoBehaviour
                 CarColor.Red => GameConfig.RedCars,
                 CarColor.Yellow => GameConfig.YellowCars,
                 CarColor.Brown => GameConfig.BrownCars,
-                CarColor.None => GameConfig.RandomBalls, 
+                CarColor.None => GameConfig.RandomBalls,
                 _ => 0
             };
         }
@@ -26,20 +27,32 @@ public class CradleTrigger3 : MonoBehaviour
     {
         if (!other.CompareTag("cradleBall")) return;
 
-        currentBalls++;
+        ballsInside.Add(other.transform);
 
-        if (!isActivated && currentBalls >= RequiredBalls)
-        {
-            isActivated = true;
-            CradleManager.Instance.CradleCompleted();
-        }
+        CheckActivation();
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("cradleBall"))
+        if (!other.CompareTag("cradleBall")) return;
+
+        ballsInside.Remove(other.transform);
+
+        CheckActivation();
+    }
+
+    private void CheckActivation()
+    {
+        if (!isActivated && ballsInside.Count >= RequiredBalls)
         {
-            currentBalls--;
+            isActivated = true;
+            CradleManager.Instance.CradleCompleted();
+        }
+        else if (isActivated && ballsInside.Count < RequiredBalls)
+        {
+            isActivated = false;
+            // Optional (only if you want dynamic undo):
+            // CradleManager.Instance.CradleUncompleted();
         }
     }
 }

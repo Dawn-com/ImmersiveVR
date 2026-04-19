@@ -15,9 +15,11 @@ public class CradleManager : MonoBehaviour
     public void CradleCompleted()
     {
         completedCradles++;
+        Debug.Log("Cradle completed! Total now: " + completedCradles);
 
         if (completedCradles >= totalCradles)
         {
+            Debug.Log("ALL CRADLES COMPLETE");
             GameEvents3.current.AllCradlesActivated();
         }
     }
