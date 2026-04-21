@@ -11,6 +11,8 @@ public class VRInstructionZone : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("Triggered by: " + other.name + " Tag: " + other.tag);
+
         if (other.CompareTag("Player"))
         {
             canvas.SetActive(true);

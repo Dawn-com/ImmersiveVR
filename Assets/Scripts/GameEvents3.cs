@@ -15,5 +15,6 @@ public class GameEvents3 : MonoBehaviour
     public void AllCradlesActivated()
     {
         eventAllCradlesActive?.Invoke();
+        eventAllCradlesActive = null;
     }
 }

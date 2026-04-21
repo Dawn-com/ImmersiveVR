@@ -7,7 +7,7 @@ public class ActivateStrip : MonoBehaviour
     private void Start()
     {
         ActiveStrip.SetActive(false);
-        GameEvents.current.eventCradleActive += Activate;
+        GameEvents.current.eventAllCradlesActive += Activate;
     }
 
     private void Activate()

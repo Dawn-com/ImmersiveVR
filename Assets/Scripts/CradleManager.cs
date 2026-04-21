@@ -4,23 +4,39 @@ public class CradleManager : MonoBehaviour
 {
     public static CradleManager Instance;
 
-    private int completedCradles = 0;
-    public int totalCradles = 4;
+    private int totalBallsInside = 0;
+    public int requiredTotalBalls = 11;
+
+    private bool isComplete = false;
 
     private void Awake()
     {
         Instance = this;
     }
 
-    public void CradleCompleted()
+    public void BallEntered()
     {
-        completedCradles++;
-        Debug.Log("Cradle completed! Total now: " + completedCradles);
+        totalBallsInside++;
+        CheckCompletion();
+    }
 
-        if (completedCradles >= totalCradles)
+    public void BallExited()
+    {
+        totalBallsInside--;
+        CheckCompletion();
+    }
+
+    private void CheckCompletion()
+    {
+        if (!isComplete && totalBallsInside >= requiredTotalBalls)
         {
+            isComplete = true;
             Debug.Log("ALL CRADLES COMPLETE");
             GameEvents3.current.AllCradlesActivated();
+        }
+        else if (isComplete && totalBallsInside < requiredTotalBalls)
+        {
+            isComplete = false;
         }
     }
 }
